@@ -19,3 +19,14 @@
     vertical-align: middle;
     padding: 15px;
 }
+#movie h2, #movie li{
+    color: white;
+}
+#movie li{
+    background-color: #343a40;
+}
+#movie .movieInfo{
+    background-color: rgba(0, 0, 0, 0.82);
+    border-radius: 15px;
+    padding: 25px;
+}
