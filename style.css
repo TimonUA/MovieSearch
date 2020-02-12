@@ -1,3 +1,21 @@
-body{
-    background-color: darkslategrey;
+#movies img, #movie img{
+    width:100%;
+}
+
+#movies .col-md-4 .well{
+    margin-bottom: 25px;
+    background-color: rgba(0, 0, 0, 0.82);
+    border-radius: 15px;
+    padding: 15px;
+    padding-bottom: 0px;
+    height: auto;
+    text-align: center;
+    vertical-align: middle;
+    /* justify-content: center; */
+}
+
+#movies h5{
+    text-align: center;
+    vertical-align: middle;
+    padding: 15px;
 }
