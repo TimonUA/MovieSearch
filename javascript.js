@@ -1,10 +1,13 @@
 $(document).ready(() => {
     $('#searchForm').on('submit', (e) => {
         let searchMovie = $('#searchText').val();
-        runSearch(searchMovie);
+        let url = ''.concat(baseURL, 'search/movie?api_key=', APIKEY, '&language=', movieLanguage , '&query=', searchMovie, "&page=");
+        console.log(url);
+        runLoad(1,url,"");
         e.preventDefault();
     });
 });
+let activePage = 1;
 let selectGenres = document.getElementById("selectGenres");
 let selectCollection = document.getElementById("selectCollection");
 let baseURL='https://api.themoviedb.org/3/';
@@ -13,23 +16,27 @@ let baseImageURL = 'http://image.tmdb.org/t/p/' ;
 let movieLanguage ='en-US';
 let APIKEY='f7fae4e159c02dce183099b33d708df6';
 setGenres();
+let urlTemp = "";
+let urlSecondTemp = "";
 let startURL=''.concat(baseURL, 'movie/popular?api_key=', APIKEY, '&language=', movieLanguage,'&page=');;
-runLoad("",startURL,"");
+runLoad(activePage,startURL,urlSecondTemp);
 
-function runLoad(page,url,urlSecondary){
-    let tempurl;
+async function runLoad(page,url,urlSecondary){
+    urlTemp = url;
+    urlSecondTemp=urlSecondary;
     // if(page){
     //     tempurl = ''.concat(url, page, genre);
     // }
     // else{
     //     tempurl = ''.concat(url,  genre);
     // }
-    tempurl = ''.concat(url, page, urlSecondary);
-    console.log("tempurl: ",tempurl);
+    
+    console.log("True page:",page);
+    tempurl = ''.concat(url,  page, urlSecondTemp);
     fetch(tempurl)
     .then(result=>result.json())
     .then((data)=>{
-        console.log(data);
+        console.log("Data:",data);
         let movies = data.results;
         let output = '';
         $.each(movies,(index,movie) => {
@@ -51,21 +58,18 @@ function runLoad(page,url,urlSecondary){
             </div>
             `;
         });
+       
         $('#movies').html(output);
     })
     .catch((err)=>{
         console.log(err);
     });
+    await pagination();
 };
-// function runLoad(page,genre){
-//     let url;
-//     if(page){
-//         url = ''.concat(baseURL, 'movie/popular?api_key=', APIKEY, '&language=', movieLanguage , '&page=', page, genre);
-//     }
-//     else{
-//         url = ''.concat(baseURL, 'movie/popular?api_key=', APIKEY, '&language=', movieLanguage , genre);
-//     }
-//     console.log("tempurl: ",url);
+// async function runSearch(searchMovie){
+//     urlTemp = ''.concat(baseURL, 'search/movie?api_key=', APIKEY, '&language=', movieLanguage , '&query=', searchMovie);
+//     urlSecondTemp=" ";
+//     let url = 
 //     fetch(url)
 //     .then(result=>result.json())
 //     .then((data)=>{
@@ -96,40 +100,8 @@ function runLoad(page,url,urlSecondary){
 //     .catch((err)=>{
 //         console.log(err);
 //     });
-// };
-function runSearch(searchMovie){
-    let url = ''.concat(baseURL, 'search/movie?api_key=', APIKEY, '&language=', movieLanguage , '&query=', searchMovie);
-    fetch(url)
-    .then(result=>result.json())
-    .then((data)=>{
-        console.log(data);
-        let movies = data.results;
-        let output = '';
-        $.each(movies,(index,movie) => {
-            let imgURL;
-            if(movie.poster_path){
-                imgURL = ''.concat(baseImageURL, configData, movie.poster_path);
-            }
-            else{
-                imgURL="images/movie_icon.png";
-            }           
-            output+= `
-            <div class="col-md-4">
-            <a onclick="moreInfo('${movie.id}')"  href="#">
-                <div class="well text-center justify-content-md-center">
-                      <img src="${imgURL}" style="size:300px"">
-                      <h5 class="lead align-middle text-center" style="color:white;  ">${movie.title}</h5>
-                </div>
-            </a> 
-            </div>
-            `;
-        });
-        $('#movies').html(output);
-    })
-    .catch((err)=>{
-        console.log(err);
-    });
- };
+//     await pagination();
+//  };
 
  function moreInfo(id){
     sessionStorage.setItem('movieId',id);
@@ -195,13 +167,14 @@ function runSearch(searchMovie){
  selectGenres.onchange = function () {
     if (this.selectedIndex == 0)
         return;
-    selectCollection.selectedIndex = 0;    
+    selectCollection.selectedIndex = 0; 
+    activePage = 1;   
     let genreId = this.options[this.selectedIndex].getAttribute("data-idGenre");
-    console.log("genreID:",genreId)  
+    // console.log("genreID:",genreId);  
     let url= ''.concat(baseURL, 'discover/movie?api_key=', APIKEY, '&language=', movieLanguage , '&sort_by=popularity.desc&include_adult=false&include_video=false&page=');  
-    console.log("URL:",url)  
+    // console.log("URL:",url);  
     let urlSecondary = '&with_genres=' + genreId;
-    console.log("urlSecondary:",urlSecondary)  
+    // console.log("urlSecondary:",urlSecondary);  
     runLoad(1,url,urlSecondary); 
 };
 
@@ -236,3 +209,70 @@ async function setGenres() {
         selectGenres.add(option);
     }
 };
+
+// function getPages(pageNumber){
+//     let number = "";
+//     let firstNumber = ((pageNumber-1)*10)+1;
+//     for(let i=firstNumber; i<=pageNumber*10;i++){
+//         number+=" " + i;
+//     }
+//     console.log(number);
+// }
+// let pages = document.getElementsByClassName("page-link");
+// let currentPage;
+// for(let i = 0; i < pages.length; i++){
+//     currentPage = pages[i].innerHTML;
+//     if(currentPage == "..."){
+//         continue;
+//     }
+//     pages[i].addEventListener("click", function(){getPages(1);});
+// }
+// pages[0].addEventListener("click", function(){getPages(1);})
+
+function pagination(url,urlSecondary){
+    let pages = document.querySelectorAll('#pagination a');
+
+    // console.log("Pages:",pages);
+    // let moviesOnPage = 12;
+    for(let page of pages){
+        // if(currentPage == "..."){
+        //              continue;
+        // }
+        // console.log(page);
+        page.addEventListener('click',function(){            
+             let pageNumber= +this.innerHTML;
+             console.log("Page number:",pageNumber);
+             activePage=pageNumber;
+             runLoad(activePage,urlTemp, urlSecondTemp);
+           
+            // let start=(pageNumber-1)*moviesOnPage;
+            // let end=start + moviesOnPage;
+            // let showsMovies = movies.slice(start,end);
+            // console.log(showsMovies);
+            // for(let movie of showsMovies){
+            //     // $.each(movies,(index,movie) => {
+            //         let imgURL;
+            //         if(movie.poster_path){
+            //             imgURL = ''.concat(baseImageURL, configData, movie.poster_path);
+            //         }
+            //         else{
+            //             imgURL="images/movie_icon.png";
+            //         }           
+            //         output+= `
+            //         <div class="col-md-4">
+            //         <a onclick="moreInfo('${movie.id}')"  href="#">
+            //             <div class="well text-center justify-content-md-center">
+            //                   <img src="${imgURL}" style="size:300px"">
+            //                   <h5 class="lead align-middle text-center" style="color:white;  ">${movie.title}</h5>
+            //             </div>
+            //         </a> 
+            //         </div>
+            //         `;
+            //     // });
+                
+                
+            // }
+            // $('#showsMovies').html(output);
+        });
+    }
+}
