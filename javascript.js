@@ -5,24 +5,95 @@ $(document).ready(() => {
         e.preventDefault();
     });
 });
+let selectGenres = document.getElementById("selectGenres");
+let selectCollection = document.getElementById("selectCollection");
 let baseURL='https://api.themoviedb.org/3/';
 let configData = 'w300';
 let baseImageURL = 'http://image.tmdb.org/t/p/' ;
 let movieLanguage ='en-US';
 let APIKEY='f7fae4e159c02dce183099b33d708df6';
-// let getConfig = function(){
-//     let url = ''.concat(baseURL, 'configuration?api_key=',APIKEY);
+setGenres();
+let startURL=''.concat(baseURL, 'movie/popular?api_key=', APIKEY, '&language=', movieLanguage,'&page=');;
+runLoad("",startURL,"");
+
+function runLoad(page,url,urlSecondary){
+    let tempurl;
+    // if(page){
+    //     tempurl = ''.concat(url, page, genre);
+    // }
+    // else{
+    //     tempurl = ''.concat(url,  genre);
+    // }
+    tempurl = ''.concat(url, page, urlSecondary);
+    console.log("tempurl: ",tempurl);
+    fetch(tempurl)
+    .then(result=>result.json())
+    .then((data)=>{
+        console.log(data);
+        let movies = data.results;
+        let output = '';
+        $.each(movies,(index,movie) => {
+            let imgURL;
+            if(movie.poster_path){
+                imgURL = ''.concat(baseImageURL, configData, movie.poster_path);
+            }
+            else{
+                imgURL="images/movie_icon.png";
+            }           
+            output+= `
+            <div class="col-md-4">
+            <a onclick="moreInfo('${movie.id}')"  href="#">
+                <div class="well text-center justify-content-md-center">
+                      <img src="${imgURL}" style="size:300px"">
+                      <h5 class="lead align-middle text-center" style="color:white;  ">${movie.title}</h5>
+                </div>
+            </a> 
+            </div>
+            `;
+        });
+        $('#movies').html(output);
+    })
+    .catch((err)=>{
+        console.log(err);
+    });
+};
+// function runLoad(page,genre){
+//     let url;
+//     if(page){
+//         url = ''.concat(baseURL, 'movie/popular?api_key=', APIKEY, '&language=', movieLanguage , '&page=', page, genre);
+//     }
+//     else{
+//         url = ''.concat(baseURL, 'movie/popular?api_key=', APIKEY, '&language=', movieLanguage , genre);
+//     }
+//     console.log("tempurl: ",url);
 //     fetch(url)
-//     .then((result)=>{
-//         return result.json();
-//     })
+//     .then(result=>result.json())
 //     .then((data)=>{
-//      baseImageURL = data.images.secure_base_url;
-//      configData = data.images;
-//      console.log('config:',data);
-//      console.log('success config get');   
+//         console.log(data);
+//         let movies = data.results;
+//         let output = '';
+//         $.each(movies,(index,movie) => {
+//             let imgURL;
+//             if(movie.poster_path){
+//                 imgURL = ''.concat(baseImageURL, configData, movie.poster_path);
+//             }
+//             else{
+//                 imgURL="images/movie_icon.png";
+//             }           
+//             output+= `
+//             <div class="col-md-4">
+//             <a onclick="moreInfo('${movie.id}')"  href="#">
+//                 <div class="well text-center justify-content-md-center">
+//                       <img src="${imgURL}" style="size:300px"">
+//                       <h5 class="lead align-middle text-center" style="color:white;  ">${movie.title}</h5>
+//                 </div>
+//             </a> 
+//             </div>
+//             `;
+//         });
+//         $('#movies').html(output);
 //     })
-//     .catch(function(err){
+//     .catch((err)=>{
 //         console.log(err);
 //     });
 // };
@@ -64,7 +135,7 @@ function runSearch(searchMovie){
     sessionStorage.setItem('movieId',id);
     window.location = 'movie.html';
     return false;
- }
+ };
 
  function getMovie(){
     let movieId = sessionStorage.getItem('movieId');
@@ -76,6 +147,7 @@ function runSearch(searchMovie){
         let movie = data;
         document.title=movie.title;
         let imgURL;
+        // let videoURL = ''.concat(baseURL , 'movie/' , movieId , 'videos?api_key=' , APIKEY , '&language=' , movieLanguage);
         if(movie.poster_path){
             imgURL = ''.concat(baseImageURL, configData, movie.poster_path);
         }
@@ -116,4 +188,49 @@ function runSearch(searchMovie){
     .catch((err)=>{
         console.log(err);
     });
- }
+ };
+
+ selectGenres.onchange = function () {
+    if (this.selectedIndex == 0)
+        return;
+    selectCollection.selectedIndex = 0;    
+    let genreId = this.options[this.selectedIndex].getAttribute("data-idGenre");
+    console.log("genreID:",genreId)  
+    let url= ''.concat(baseURL, 'discover/movie?api_key=', APIKEY, '&language=', movieLanguage , '&sort_by=popularity.desc&include_adult=false&include_video=false&page=');  
+    console.log("URL:",url)  
+    let urlSecondary = '&with_genres=' + genreId;
+    console.log("urlSecondary:",urlSecondary)  
+    runLoad(1,url,urlSecondary); 
+};
+
+selectCollection.onchange = function () {
+    if (this.selectedIndex == 0)
+        return;
+    selectGenres.selectedIndex = 0;
+    activePage = 1;
+    let url = "";
+    switch (this.options[this.selectedIndex].text) {
+        case "Popular":
+            url = ''.concat(baseURL, 'movie/popular?api_key=', APIKEY, '&language=', movieLanguage , '&page=');
+            break;
+        case "Top Rated":
+            url = ''.concat(baseURL, 'movie/top_rated?api_key=', APIKEY, '&language=', movieLanguage , '&page=');
+            break;
+        default:
+            url = ''.concat(baseURL, 'movie/popular?api_key=', APIKEY, '&language=', movieLanguage , '&page=');
+    }
+    runLoad(1, url, "");
+}
+
+async function setGenres() {
+    let urlGenres = ''.concat(baseURL, 'genre/movie/list?api_key=', APIKEY, '&language=', movieLanguage);
+    let response = await fetch(urlGenres);
+    let commits = await response.json();
+
+    for (let genre of commits.genres) {
+        let option = document.createElement("option");
+        option.text = genre.name;
+        option.setAttribute("data-idGenre", genre.id);
+        selectGenres.add(option);
+    }
+};
