@@ -14,15 +14,21 @@
         <a class="navbar-brand" href="index.html">
             <img src="images/movie.png" width="30" height="30" class="d-inline-block align-top" alt="">
             MovieSearch
-        </a>           
-            <select id="selectGenres"  class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        </a>   
+        <ul class="navbar-nav mr-auto hr">    
+            <li class="nav-item dropdown"> 
+            <select id="selectGenres"  class="btn btn-secondary dropdown-toggle nav-item" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <option selected disabled hidden>Genres</option>
             </select>
+            </li>
+            <li class="nav-item dropdown"> 
             <select id="selectCollection"  class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <option selected disabled hidden >Movies Collections</option>
                 <option>Popular</option>
                 <option>Top Rated</option>
             </select>
+            </li>
+        </ul>   
         <form class="form-inline" id ="searchForm">
           <input class="form-control mr-sm-2" id="searchText" type="text" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>

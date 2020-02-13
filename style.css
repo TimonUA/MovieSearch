@@ -30,3 +30,8 @@
     border-radius: 15px;
     padding: 25px;
 }
+ul.hr ,li{
+    display: inline;
+    margin-right: 5px;
+    padding: 3px;
+}

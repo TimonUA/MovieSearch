@@ -153,7 +153,9 @@ function runSearch(searchMovie){
         }
         else{
             imgURL="images/movie_icon.png";
-        }          
+        }   
+        genres=movie.genres;
+           
         let output = `
         <div class="movieInfo">
         <div class="row">
@@ -163,7 +165,7 @@ function runSearch(searchMovie){
             <div class="col-md-8">
                 <h2>${movie.title}</h2>
                 <ul class="list-group">   
-                    <li class="list-group-item"><b>Genre:</b> ${movie.genres}</li>
+                    <li class="list-group-item"><b>Genre:</b> ${ $.each(genres,(index,genre) => {genre.name}) }); }</li>
                     <li class="list-group-item"><b>Released:</b> ${movie.release_date}</li>
                     <li class="list-group-item"><b>Budget:</b> ${movie.budget}</li>
                     <li class="list-group-item"><b>Rated:</b> ${movie.popularity}%</li>
