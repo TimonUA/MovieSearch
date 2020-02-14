@@ -185,12 +185,12 @@ async function setGenres() {
 
 function pagination(url,urlSecondary){
     let pages = document.querySelectorAll('#pagination a');
-
     // console.log("Pages:",pages);
     // let moviesOnPage = 12;
     for(let page of pages){
         // console.log(page);       
-            page.addEventListener('click',function(){     
+            page.addEventListener('click',function(){
+                pages[activePage].removeAttribute("id");     
                 let pageNumber= this.innerHTML;
                 console.log("Page number(at start):",pageNumber);
                 if(pageNumber == "..."){
@@ -215,8 +215,8 @@ function pagination(url,urlSecondary){
                 }
                 console.log("Page number(true):",pageNumber);
                 activePage=pageNumber;
+                page.setAttribute("id","active ");
                 runLoad(activePage,urlTemp, urlSecondTemp); 
            });
-        
     }
 }

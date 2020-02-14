@@ -39,3 +39,19 @@ ul.hr ,li{
     margin-right: 5px;
     padding: 3px;
 }
+
+#active{
+    color: aquamarine;
+    border-color: aquamarine;
+
+}
+
+a.page-link{
+    background-color: rgba(0, 0, 0, 0.82); 
+    border-color: rgba(0, 0, 0, 0.82); 
+    color: white;
+}
+a.page-link:hover{
+    background-color: rgba(0, 0, 0, 0.82); 
+    color:white;
+}
