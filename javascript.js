@@ -213,8 +213,6 @@ function pagination(url,urlSecondary){
                         pageNumber = +activePage - 1;
                     }
                 }
-                else{  
-                }
                 console.log("Page number(true):",pageNumber);
                 activePage=pageNumber;
                 runLoad(activePage,urlTemp, urlSecondTemp); 
