@@ -215,8 +215,19 @@ function pagination(url,urlSecondary){
                 }
                 console.log("Page number(true):",pageNumber);
                 activePage=pageNumber;
-                page.setAttribute("id","active ");
+                page.setAttribute("id","active");
                 runLoad(activePage,urlTemp, urlSecondTemp); 
+                managePages(page,pages,activePage);
            });
     }
+}
+
+function managePages(page, pages, pageNumber){
+  if(pages[page].innerHTML>=5){
+      pages[2].innerHTML = "...";
+      pages[3].innerHTML = pageNumber - 1;
+      pages[4].innerHTML = pageNumber;
+      pages[5].innerHTML = pageNumber + 1;
+  }
+  
 }
