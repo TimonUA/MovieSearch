@@ -31,8 +31,8 @@ async function runLoad(page,url,urlSecondary){
     // else{
     //     tempurl = ''.concat(url,  genre);
     // }
-    
-    console.log("True page:",page);
+
+    // console.log("True page:",page);
     tempurl = ''.concat(url,  page, urlSecondTemp);
     fetch(tempurl)
     .then(result=>result.json())
@@ -49,7 +49,7 @@ async function runLoad(page,url,urlSecondary){
             }
             else{
                 imgURL="images/movie_icon.png";
-            }           
+            }
             output+= `
             <div class="col-md-4">
             <a onclick="moreInfo('${movie.id}')"  href="#">
@@ -57,11 +57,11 @@ async function runLoad(page,url,urlSecondary){
                       <img src="${imgURL}" style="size:300px"">
                       <h5 class="lead align-middle text-center" style="color:white;  ">${movie.title}</h5>
                 </div>
-            </a> 
+            </a>
             </div>
             `;
         });
-       
+
         $('#movies').html(output);
     })
     .catch((err)=>{
@@ -82,7 +82,7 @@ async function runLoad(page,url,urlSecondary){
     fetch(url)
     .then(result=>result.json())
     .then((data)=>{
-        console.log(data);
+        // console.log(data);
         let movie = data;
         document.title=movie.title;
         let imgURL;
@@ -92,7 +92,7 @@ async function runLoad(page,url,urlSecondary){
         }
         else{
             imgURL="images/movie_icon.png";
-        }   
+        }
         genres=movie.genres;
         let movieGenres;
         movieGenres = "";
@@ -100,7 +100,7 @@ async function runLoad(page,url,urlSecondary){
             movieGenres += genre.name + ", ";
         }
         movieGenres = movieGenres.slice(0, -2);
-        console.log(movieGenres);
+        // console.log(movieGenres);
         let output = `
         <div class="movieInfo">
         <div class="row">
@@ -109,7 +109,7 @@ async function runLoad(page,url,urlSecondary){
             </div>
             <div class="col-md-8">
                 <h2>${movie.title}</h2>
-                <ul class="list-group">   
+                <ul class="list-group">
                     <li class="list-group-item"><b>Genre:</b> ${ movieGenres }</li>
                     <li class="list-group-item"><b>Released:</b> ${movie.release_date}</li>
                     <li class="list-group-item"><b>Budget:</b> ${movie.budget}$</li>
@@ -121,7 +121,7 @@ async function runLoad(page,url,urlSecondary){
         <div class="row" style="padding-left:15px; padding-top:25px; color:white">
             <div class="well">
                 <h3>Overwiew:</h3>
-                
+
                 <p class="lead">${movie.overview}</p
                 <hr>
                 <a href="https://www.themoviedb.org/movie/${movie.id}"  role="button" class="btn btn-info">Go To MovieDB</a>
@@ -140,15 +140,15 @@ async function runLoad(page,url,urlSecondary){
  selectGenres.onchange = function () {
     if (this.selectedIndex == 0)
         return;
-    selectCollection.selectedIndex = 0; 
-    activePage = 1;   
+    selectCollection.selectedIndex = 0;
+    activePage = 1;
     let genreId = this.options[this.selectedIndex].getAttribute("data-idGenre");
-    // console.log("genreID:",genreId);  
-    let url= ''.concat(baseURL, 'discover/movie?api_key=', APIKEY, '&language=', movieLanguage , '&sort_by=popularity.desc&include_adult=false&include_video=false&page=');  
-    // console.log("URL:",url);  
+    // console.log("genreID:",genreId);
+    let url= ''.concat(baseURL, 'discover/movie?api_key=', APIKEY, '&language=', movieLanguage , '&sort_by=popularity.desc&include_adult=false&include_video=false&page=');
+    // console.log("URL:",url);
     let urlSecondary = '&with_genres=' + genreId;
-    // console.log("urlSecondary:",urlSecondary);  
-    runLoad(1,url,urlSecondary); 
+    // console.log("urlSecondary:",urlSecondary);
+    runLoad(1,url,urlSecondary);
 };
 
 selectCollection.onchange = function () {
@@ -187,12 +187,14 @@ function pagination(url,urlSecondary){
     let pages = document.querySelectorAll('#pagination a');
     // console.log("Pages:",pages);
     // let moviesOnPage = 12;
-    for(let page of pages){
-        // console.log(page);       
+    // console.log("pages[2]: ", pages[2].textContent);
+    let lastActive;
+    for(let [index, page] of pages.entries()){
+        // console.log(page);
             page.addEventListener('click',function(){
-                pages[activePage].removeAttribute("id");     
-                let pageNumber= this.innerHTML;
-                console.log("Page number(at start):",pageNumber);
+                pages[activePage].removeAttribute("id");
+                let pageNumber= this.textContent;
+                // console.log("Page number(at start):",pageNumber);
                 if(pageNumber == "..."){
                     pageNumber=activePage;
                 }
@@ -201,7 +203,7 @@ function pagination(url,urlSecondary){
                         pageNumber=activePage;
                     }
                     else{
-                        
+
                         pageNumber = +activePage + 1;
                     }
                 }
@@ -213,21 +215,41 @@ function pagination(url,urlSecondary){
                         pageNumber = +activePage - 1;
                     }
                 }
-                console.log("Page number(true):",pageNumber);
+                // console.log("Page number(true):",pageNumber);
                 activePage=pageNumber;
+               
+                runLoad(activePage,urlTemp, urlSecondTemp);
+                // index = pages.indexOf(page);
+              
                 page.setAttribute("id","active");
-                runLoad(activePage,urlTemp, urlSecondTemp); 
-                managePages(page,pages,activePage);
+                lastActive=index;
            });
     }
+    managePages(pages,activePage);
 }
 
-function managePages(page, pages, pageNumber){
-  if(pages[page].innerHTML>=5){
-      pages[2].innerHTML = "...";
-      pages[3].innerHTML = pageNumber - 1;
-      pages[4].innerHTML = pageNumber;
-      pages[5].innerHTML = pageNumber + 1;
+function managePages(pages, pageNumber){
+    // let index = pages.indexOf(page,0);
+    console.log( "Pages: ",pages[5].textContent);
+    console.log("pageNumber: ", pageNumber);
+    page=pages[5].textContent;
+    console.log(page);
+  if(pageNumber>=5 && pageNumber<498){
+      console.log("TRUE TRUE TRUE");
+      pages[2].textContent = "...";
+      pages[3].textContent = +pageNumber - 1;
+      pages[4].textContent = +pageNumber;
+      pages[5].textContent = +pageNumber + 1;
+    
   }
-  
+  else if(pages[5].textContent>=pagesTotal-2){
+    pages[6].textContent = +pageNumber + 1;
+  }
+  else{
+    pages[2].textContent = 2;
+    pages[3].textContent = 3;
+    pages[4].textContent = 4;
+    pages[5].textContent = 5;
+
+}
 }
