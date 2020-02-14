@@ -196,15 +196,16 @@ function pagination(url,urlSecondary){
                 if(pageNumber == "..."){
                     pageNumber=activePage;
                 }
-                else if(pageNumber == "»"){
-                    if(activePage=="500"){
+                else if(pageNumber  === "»"){
+                    if(activePage==pagesTotal){
                         pageNumber=activePage;
                     }
                     else{
-                        pageNumber = activePage + 1;
+                        
+                        pageNumber = +activePage + 1;
                     }
                 }
-                else if(pageNumber=="«"){
+                else if(pageNumber==="«"){
                     if(activePage == "1"){
                         pageNumber=activePage;
                     }
