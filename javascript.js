@@ -8,6 +8,7 @@ $(document).ready(() => {
     });
 });
 let activePage = 1;
+let pagesTotal = 0;
 let selectGenres = document.getElementById("selectGenres");
 let selectCollection = document.getElementById("selectCollection");
 let baseURL='https://api.themoviedb.org/3/';
@@ -37,6 +38,8 @@ async function runLoad(page,url,urlSecondary){
     .then(result=>result.json())
     .then((data)=>{
         console.log("Data:",data);
+        pagesTotal = data.total_pages;
+        console.log("Pages total:",pagesTotal);
         let movies = data.results;
         let output = '';
         $.each(movies,(index,movie) => {
@@ -66,42 +69,6 @@ async function runLoad(page,url,urlSecondary){
     });
     await pagination();
 };
-// async function runSearch(searchMovie){
-//     urlTemp = ''.concat(baseURL, 'search/movie?api_key=', APIKEY, '&language=', movieLanguage , '&query=', searchMovie);
-//     urlSecondTemp=" ";
-//     let url = 
-//     fetch(url)
-//     .then(result=>result.json())
-//     .then((data)=>{
-//         console.log(data);
-//         let movies = data.results;
-//         let output = '';
-//         $.each(movies,(index,movie) => {
-//             let imgURL;
-//             if(movie.poster_path){
-//                 imgURL = ''.concat(baseImageURL, configData, movie.poster_path);
-//             }
-//             else{
-//                 imgURL="images/movie_icon.png";
-//             }           
-//             output+= `
-//             <div class="col-md-4">
-//             <a onclick="moreInfo('${movie.id}')"  href="#">
-//                 <div class="well text-center justify-content-md-center">
-//                       <img src="${imgURL}" style="size:300px"">
-//                       <h5 class="lead align-middle text-center" style="color:white;  ">${movie.title}</h5>
-//                 </div>
-//             </a> 
-//             </div>
-//             `;
-//         });
-//         $('#movies').html(output);
-//     })
-//     .catch((err)=>{
-//         console.log(err);
-//     });
-//     await pagination();
-//  };
 
  function moreInfo(id){
     sessionStorage.setItem('movieId',id);
@@ -127,7 +94,13 @@ async function runLoad(page,url,urlSecondary){
             imgURL="images/movie_icon.png";
         }   
         genres=movie.genres;
-           
+        let movieGenres;
+        movieGenres = "";
+        for (let genre of genres) {
+            movieGenres += genre.name + ", ";
+        }
+        movieGenres = movieGenres.slice(0, -2);
+        console.log(movieGenres);
         let output = `
         <div class="movieInfo">
         <div class="row">
@@ -137,9 +110,9 @@ async function runLoad(page,url,urlSecondary){
             <div class="col-md-8">
                 <h2>${movie.title}</h2>
                 <ul class="list-group">   
-                    <li class="list-group-item"><b>Genre:</b> ${ $.each(genres,(index,genre) => {genre.name}) }); }</li>
+                    <li class="list-group-item"><b>Genre:</b> ${ movieGenres }</li>
                     <li class="list-group-item"><b>Released:</b> ${movie.release_date}</li>
-                    <li class="list-group-item"><b>Budget:</b> ${movie.budget}</li>
+                    <li class="list-group-item"><b>Budget:</b> ${movie.budget}$</li>
                     <li class="list-group-item"><b>Rated:</b> ${movie.popularity}%</li>
                     <li class="list-group-item"><b>Averege vote:</b> ${movie.vote_average}</li>
                 </ul>
@@ -210,69 +183,41 @@ async function setGenres() {
     }
 };
 
-// function getPages(pageNumber){
-//     let number = "";
-//     let firstNumber = ((pageNumber-1)*10)+1;
-//     for(let i=firstNumber; i<=pageNumber*10;i++){
-//         number+=" " + i;
-//     }
-//     console.log(number);
-// }
-// let pages = document.getElementsByClassName("page-link");
-// let currentPage;
-// for(let i = 0; i < pages.length; i++){
-//     currentPage = pages[i].innerHTML;
-//     if(currentPage == "..."){
-//         continue;
-//     }
-//     pages[i].addEventListener("click", function(){getPages(1);});
-// }
-// pages[0].addEventListener("click", function(){getPages(1);})
-
 function pagination(url,urlSecondary){
     let pages = document.querySelectorAll('#pagination a');
 
     // console.log("Pages:",pages);
     // let moviesOnPage = 12;
     for(let page of pages){
-        // if(currentPage == "..."){
-        //              continue;
-        // }
-        // console.log(page);
-        page.addEventListener('click',function(){            
-             let pageNumber= +this.innerHTML;
-             console.log("Page number:",pageNumber);
-             activePage=pageNumber;
-             runLoad(activePage,urlTemp, urlSecondTemp);
-           
-            // let start=(pageNumber-1)*moviesOnPage;
-            // let end=start + moviesOnPage;
-            // let showsMovies = movies.slice(start,end);
-            // console.log(showsMovies);
-            // for(let movie of showsMovies){
-            //     // $.each(movies,(index,movie) => {
-            //         let imgURL;
-            //         if(movie.poster_path){
-            //             imgURL = ''.concat(baseImageURL, configData, movie.poster_path);
-            //         }
-            //         else{
-            //             imgURL="images/movie_icon.png";
-            //         }           
-            //         output+= `
-            //         <div class="col-md-4">
-            //         <a onclick="moreInfo('${movie.id}')"  href="#">
-            //             <div class="well text-center justify-content-md-center">
-            //                   <img src="${imgURL}" style="size:300px"">
-            //                   <h5 class="lead align-middle text-center" style="color:white;  ">${movie.title}</h5>
-            //             </div>
-            //         </a> 
-            //         </div>
-            //         `;
-            //     // });
-                
-                
-            // }
-            // $('#showsMovies').html(output);
-        });
+        // console.log(page);       
+            page.addEventListener('click',function(){     
+                let pageNumber= this.innerHTML;
+                console.log("Page number(at start):",pageNumber);
+                if(pageNumber == "..."){
+                    pageNumber=activePage;
+                }
+                else if(pageNumber == "»"){
+                    if(activePage=="500"){
+                        pageNumber=activePage;
+                    }
+                    else{
+                        pageNumber = activePage + 1;
+                    }
+                }
+                else if(pageNumber=="«"){
+                    if(activePage == "1"){
+                        pageNumber=activePage;
+                    }
+                    else{
+                        pageNumber = +activePage - 1;
+                    }
+                }
+                else{  
+                }
+                console.log("Page number(true):",pageNumber);
+                activePage=pageNumber;
+                runLoad(activePage,urlTemp, urlSecondTemp); 
+           });
+        
     }
 }
