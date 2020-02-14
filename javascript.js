@@ -67,7 +67,7 @@ async function runLoad(page,url,urlSecondary){
     .catch((err)=>{
         console.log(err);
     });
-    await pagination();
+    await myPagination();
 };
 
  function moreInfo(id){
@@ -183,41 +183,136 @@ async function setGenres() {
     }
 };
 
-function pagination(url,urlSecondary){
-    let pages = document.querySelectorAll('#pagination a');
+// function pagination(url,urlSecondary){
+//     let pages = document.querySelectorAll('#pagination a');
 
-    // console.log("Pages:",pages);
-    // let moviesOnPage = 12;
-    for(let page of pages){
-        // console.log(page);       
-            page.addEventListener('click',function(){     
-                let pageNumber= this.innerHTML;
-                console.log("Page number(at start):",pageNumber);
-                if(pageNumber == "..."){
-                    pageNumber=activePage;
-                }
-                else if(pageNumber == "»"){
-                    if(activePage=="500"){
-                        pageNumber=activePage;
-                    }
-                    else{
-                        pageNumber = activePage + 1;
-                    }
-                }
-                else if(pageNumber=="«"){
-                    if(activePage == "1"){
-                        pageNumber=activePage;
-                    }
-                    else{
-                        pageNumber = +activePage - 1;
-                    }
-                }
-                else{  
-                }
-                console.log("Page number(true):",pageNumber);
-                activePage=pageNumber;
-                runLoad(activePage,urlTemp, urlSecondTemp); 
-           });
+//     // console.log("Pages:",pages);
+//     // let moviesOnPage = 12;
+//     for(let page of pages){
+//         // console.log(page);       
+//             page.addEventListener('click',function(){     
+//                 let pageNumber= this.innerHTML;
+//                 console.log("Page number(at start):",pageNumber);
+//                 if(pageNumber == "..."){
+//                     pageNumber=activePage;
+//                 }
+//                 else if(pageNumber == "»"){
+//                     if(activePage=="500"){
+//                         pageNumber=activePage;
+//                     }
+//                     else{
+//                         pageNumber = activePage + 1;
+//                     }
+//                 }
+//                 else if(pageNumber=="«"){
+//                     if(activePage == "1"){
+//                         pageNumber=activePage;
+//                     }
+//                     else{
+//                         pageNumber = +activePage - 1;
+//                     }
+//                 }
+//                 else{  
+//                 }
+//                 console.log("Page number(true):",pageNumber);
+//                 activePage=pageNumber;
+//                 runLoad(activePage,urlTemp, urlSecondTemp); 
+//            });
         
+//     }
+// }
+
+function myPagination() {
+    let colorActive = 'blue';
+
+    let previousButton = document.createElement("button");
+    previousButton.textContent = "previous";
+    previousButton.onclick = clickOnBtn;
+    setElementInPagination(previousButton);
+
+    for (let i = 0; i < pagesTotal; i++) {
+        if (i == activePage - 3 && activePage >= 6 && pagesTotal >= 6) {
+            let label = document.createElement("label");
+            label.textContent = " . . . ";
+            setElementInPagination(label);
+        }
+        else if (i < 3) {
+            let button = document.createElement("button");
+            button.textContent = `${i + 1}`;
+            if (i == activePage - 1) {
+
+                button.style.color = colorActive;
+            }
+            button.onclick = clickOnBtn;
+            setElementInPagination(button);
+        }
+        else if (i <= activePage && (activePage > 2 && activePage < 7)) {
+            let button = document.createElement("button");
+            button.textContent = `${i + 1}`;
+            if (i == activePage - 1) {
+
+                button.style.color = colorActive;
+            }
+            button.onclick = clickOnBtn;
+            setElementInPagination(button);
+        }
+        else if (i == pagesTotal - 2 && activePage <= pagesTotal - 3) {
+            let label = document.createElement("label");
+            label.textContent = " . . . ";
+            setElementInPagination(label);
+
+        }
+        else if (i >= activePage - 2 && i <= activePage) {
+            let button = document.createElement("button");
+            button.textContent = `${i + 1}`;
+            if (i == activePage - 1) {
+
+                button.style.color = colorActive;
+            }
+            button.onclick = clickOnBtn;
+            setElementInPagination(button);
+        }
+        else if (i == pagesTotal - 1) {
+            let button = document.createElement("button");
+            button.textContent = `${i + 1}`;
+            if (i == activePage - 1) {
+
+                button.style.color = colorActive;
+            }
+            button.onclick = clickOnBtn;
+            setElementInPagination(button);
+        }
+
+        if (i == pagesTotal - 1) {
+            let nextButton = document.createElement("button");
+            nextButton.textContent = "next";
+            nextButton.onclick = clickOnBtn;
+            setElementInPagination(nextButton);
+        }
     }
+}
+
+function setElementInPagination(elem) {
+    let paginations = document.getElementsByClassName("pagination");
+    for (let i = 0; i < paginations.length; i++) {
+        if (i == 0) {
+            paginations[i].appendChild(elem);
+        }
+        // else {
+        //     let clone = elem.cloneNode(true);
+        //     clone.onclick = clickOnBtn;
+        //     paginations[i].appendChild(clone);
+        // }
+    }
+}
+
+function clickOnBtn() {
+    if (this.textContent === "previous")
+        activePage = activePage == 1 ? 1 : --activePage;
+    else if (this.textContent === "next")
+        activePage = activePage == pagesTotal ? pagesTotal : ++activePage;
+    else
+        activePage = +this.textContent;
+
+    runLoad(activePage, urlTemp, urlSecondTemp);
 }
