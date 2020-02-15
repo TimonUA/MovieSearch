@@ -183,73 +183,78 @@ async function setGenres() {
     }
 };
 
+// function pagination(url,urlSecondary){
+//     let pages = document.querySelectorAll('#pagination a');
+//     // console.log("Pages:",pages);
+//     // let moviesOnPage = 12;
+//     // console.log("pages[2]: ", pages[2].textContent);
+//     let lastActive;
+//     for(let [index, page] of pages.entries()){
+//         // console.log(page);
+//             page.addEventListener('click',function(){
+//                 pages[activePage].removeAttribute("id");
+//                 let pageNumber= this.textContent;
+//                 // console.log("Page number(at start):",pageNumber);
+//                 if(pageNumber == "..."){
+//                     pageNumber=activePage;
+//                 }
+//                 else if(pageNumber  === "»"){
+//                     if(activePage==pagesTotal){
+//                         pageNumber=activePage;
+//                     }
+//                     else{
+
+//                         pageNumber = +activePage + 1;
+//                     }
+//                 }
+//                 else if(pageNumber==="«"){
+//                     if(activePage == "1"){
+//                         pageNumber=activePage;
+//                     }
+//                     else{
+//                         pageNumber = +activePage - 1;
+//                     }
+//                 }
+//                 // console.log("Page number(true):",pageNumber);
+//                 activePage=pageNumber;
+               
+//                 runLoad(activePage,urlTemp, urlSecondTemp);
+//                 // index = pages.indexOf(page);
+              
+//                 page.setAttribute("id","active");
+//                 lastActive=index;
+//            });
+//     }
+//     // managePages(pages,activePage);
+// }
+
 function pagination(url,urlSecondary){
     let pages = document.querySelectorAll('#pagination a');
-    // console.log("Pages:",pages);
-    // let moviesOnPage = 12;
-    // console.log("pages[2]: ", pages[2].textContent);
-    let lastActive;
-    for(let [index, page] of pages.entries()){
-        // console.log(page);
-            page.addEventListener('click',function(){
-                pages[activePage].removeAttribute("id");
-                let pageNumber= this.textContent;
-                // console.log("Page number(at start):",pageNumber);
-                if(pageNumber == "..."){
-                    pageNumber=activePage;
-                }
-                else if(pageNumber  === "»"){
-                    if(activePage==pagesTotal){
-                        pageNumber=activePage;
-                    }
-                    else{
+    console.log("Pages:",pages);
+};
 
-                        pageNumber = +activePage + 1;
-                    }
-                }
-                else if(pageNumber==="«"){
-                    if(activePage == "1"){
-                        pageNumber=activePage;
-                    }
-                    else{
-                        pageNumber = +activePage - 1;
-                    }
-                }
-                // console.log("Page number(true):",pageNumber);
-                activePage=pageNumber;
-               
-                runLoad(activePage,urlTemp, urlSecondTemp);
-                // index = pages.indexOf(page);
-              
-                page.setAttribute("id","active");
-                lastActive=index;
-           });
-    }
-    managePages(pages,activePage);
-}
-
-function managePages(pages, pageNumber){
-    // let index = pages.indexOf(page,0);
-    console.log( "Pages: ",pages[5].textContent);
-    console.log("pageNumber: ", pageNumber);
-    page=pages[5].textContent;
-    console.log(page);
-  if(pageNumber>=5 && pageNumber<498){
-      console.log("TRUE TRUE TRUE");
-      pages[2].textContent = "...";
-      pages[3].textContent = +pageNumber - 1;
-      pages[4].textContent = +pageNumber;
-      pages[5].textContent = +pageNumber + 1;
+// function managePages(pages, pageNumber){
+//     // let index = pages.indexOf(page,0);
+//     console.log( "Pages: ",pages[5].textContent);
+//     console.log("pageNumber: ", pageNumber);
+//     page=pages[5].textContent;
+//     console.log(page);
+//   if(pageNumber>=5 && pageNumber<498){
+//       console.log("TRUE TRUE TRUE");
+//       pages[2].textContent = "...";
+//       pages[3].textContent = +pageNumber - 1;
+//       pages[4].textContent = +pageNumber;
+//       pages[5].textContent = +pageNumber + 1;
     
-  }
-  else if(pages[5].textContent>=pagesTotal-2){
-    pages[6].textContent = +pageNumber + 1;
-  }
-  else{
-    pages[2].textContent = 2;
-    pages[3].textContent = 3;
-    pages[4].textContent = 4;
-    pages[5].textContent = 5;
+//   }
+//   else if(pages[5].textContent>=pagesTotal-2){
+//     pages[6].textContent = +pageNumber + 1;
+//   }
+//   else{
+//     pages[2].textContent = 2;
+//     pages[3].textContent = 3;
+//     pages[4].textContent = 4;
+//     pages[5].textContent = 5;
 
-}
-}
+// }
+// }
