@@ -184,7 +184,52 @@ async function setGenres() {
 };
 
 
-function pagination(url,urlSecondary){
+function pagination(){
     let pages = document.querySelectorAll('#pagination a');
     console.log("Pages:",pages);
+    for( page of pages){
+        // console.log(page);
+            page.addEventListener('click',function(){
+                // pages[activePage].removeAttribute("id");
+                // for( page of pages ){
+                //     if(page.hasAttribute("id","active")){
+                //         page.removeAttribute("id");
+                //     };
+                // };
+                let index = 0;
+                let pageNumber= this.textContent;
+                console.log("Page number(at start):",pageNumber);
+                if(pageNumber === "Begin"){
+                    activePage=1;
+                }
+                else if(pageNumber  === "»"){
+                    if(activePage==pagesTotal){
+                        
+                    }
+                    else{
+                        activePage ++;
+                        index ++;
+                    }
+                }
+                else if(pageNumber==="«"){
+                    if(activePage == "1"){
+
+                    }
+                    else{
+                        activePage -=  1;
+                    }
+                }
+                else if(pageNumber === "End"){
+                    activePage = pagesTotal;
+                }
+                console.log("Page number(true):",activePage);
+                console.log("Index:",index);
+               
+                runLoad(activePage,urlTemp, urlSecondTemp);
+                // index = pages.indexOf(page);
+              
+                // page.setAttribute("id","active");
+              
+           });
+    }
 };
