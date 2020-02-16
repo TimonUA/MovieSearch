@@ -76,12 +76,14 @@ async function runLoad(page,url,urlSecondary){
 
  function moreInfo(id){
     sessionStorage.setItem('movieId',id);
+    sessionStorage.setItem('movieLanguage',movieLanguage);
     window.location = 'movie.html';
     return false;
  };
 
  function getMovie(){
     let movieId = sessionStorage.getItem('movieId');
+    let movieLanguage = sessionStorage.getItem('movieLanguage');
     let url = ''.concat(baseURL , 'movie/' , movieId , '?api_key=' , APIKEY , '&language=' , movieLanguage);
     fetch(url)
     .then(result=>result.json())
@@ -177,6 +179,7 @@ selectLanguage.onchange = function () {
     }
     url = ''.concat(baseURL, 'movie/popular?api_key=', APIKEY, '&language=', movieLanguage , '&page=');
     runLoad(1, url, "");
+    // runLoad(activePage,urlTemp, urlSecondTemp);
 };
 selectCollection.onchange = function () {
     if (this.selectedIndex == 0)
