@@ -1,0 +1,63 @@
+#movies img, #movie img{
+    width:100%;
+}
+
+#movies .col-md-4 .well{
+    margin-bottom: 25px;
+    background-color: rgba(0, 0, 0, 0.82);
+    border-radius: 15px;
+    padding: 15px;
+    padding-bottom: 0px;
+    height: auto;
+    text-align: center;
+    vertical-align: middle;
+    /* justify-content: center; */
+}
+
+#movies h5{
+    text-align: center;
+    vertical-align: middle;
+    padding: 15px;
+}
+
+#movie h2, #movie li{
+    color: white;
+}
+
+#movie li{
+    background-color: #343a40;
+}
+
+#movie .movieInfo{
+    background-color: rgba(0, 0, 0, 0.82);
+    border-radius: 15px;
+    padding: 25px;
+}
+
+ul.hr ,li{
+    display: inline;
+    margin-right: 5px;
+    padding: 3px;
+}
+.btnPagination{
+    background-color: rgba(0, 0, 0, 0.82);
+    color:white;
+}
+
+.pagination button{
+    background-color: rgba(0, 0, 0, 0.82);
+    color:white;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 4px;
+    border-color: rgba(0, 0, 0, 0.82);
+}
+.pagination label{
+    color:white;
+    margin-bottom: 0;
+    padding-top: 20px;
+   text-align: center;
+   margin-left: 5px;
+   margin-right: 5px;
+    vertical-align: bottom;
+}
