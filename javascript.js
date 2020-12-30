@@ -11,6 +11,7 @@ let activePage = 1;
 let pagesTotal = 0;
 let selectGenres = document.getElementById("selectGenres");
 let selectCollection = document.getElementById("selectCollection");
+let selectLanguage = document.getElementById("selectLanguage");
 let baseURL='https://api.themoviedb.org/3/';
 let configData = 'w300';
 let baseImageURL = 'http://image.tmdb.org/t/p/' ;
@@ -34,7 +35,7 @@ async function runLoad(page,url,urlSecondary){
     
     console.log("True page:",page);
     tempurl = ''.concat(url,  page, urlSecondTemp);
-    fetch(tempurl)
+    await fetch(tempurl)
     .then(result=>result.json())
     .then((data)=>{
         console.log("Data:",data);
@@ -67,6 +68,9 @@ async function runLoad(page,url,urlSecondary){
     .catch((err)=>{
         console.log(err);
     });
+    let pagination = document.getElementsByClassName("pagination row justify-content-center");
+    pagination[0].innerHTML="";
+  
     await myPagination();
 };
 
@@ -151,6 +155,30 @@ async function runLoad(page,url,urlSecondary){
     runLoad(1,url,urlSecondary); 
 };
 
+selectLanguage.onchange = function () {
+    if (this.selectedIndex == 0)
+        return;
+    selectGenres.selectedIndex = 0;
+    activePage = 1;
+    let url = "";
+    switch (this.options[this.selectedIndex].text) {
+        case "English":
+            movieLanguage = "en-US";
+            break;
+        case "Ukrainian":
+            movieLanguage = "uk-UA";
+            break;
+        case "Russian":
+            movieLanguage = "ru-RU";
+            break;
+        default:
+            movieLanguage = "en-US";
+            break;
+    }
+    url = ''.concat(baseURL, 'movie/popular?api_key=', APIKEY, '&language=', movieLanguage , '&page=');
+    runLoad(1, url, "");
+    // runLoad(activePage,urlTemp, urlSecondTemp);
+};
 selectCollection.onchange = function () {
     if (this.selectedIndex == 0)
         return;
@@ -183,53 +211,17 @@ async function setGenres() {
     }
 };
 
-// function pagination(url,urlSecondary){
-//     let pages = document.querySelectorAll('#pagination a');
-
-//     // console.log("Pages:",pages);
-//     // let moviesOnPage = 12;
-//     for(let page of pages){
-//         // console.log(page);       
-//             page.addEventListener('click',function(){     
-//                 let pageNumber= this.innerHTML;
-//                 console.log("Page number(at start):",pageNumber);
-//                 if(pageNumber == "..."){
-//                     pageNumber=activePage;
-//                 }
-//                 else if(pageNumber == "»"){
-//                     if(activePage=="500"){
-//                         pageNumber=activePage;
-//                     }
-//                     else{
-//                         pageNumber = activePage + 1;
-//                     }
-//                 }
-//                 else if(pageNumber=="«"){
-//                     if(activePage == "1"){
-//                         pageNumber=activePage;
-//                     }
-//                     else{
-//                         pageNumber = +activePage - 1;
-//                     }
-//                 }
-//                 else{  
-//                 }
-//                 console.log("Page number(true):",pageNumber);
-//                 activePage=pageNumber;
-//                 runLoad(activePage,urlTemp, urlSecondTemp); 
-//            });
-        
-//     }
-// }
-
 function myPagination() {
-    let colorActive = 'blue';
+    let colorActive =  "aquamarine";
 
     let previousButton = document.createElement("button");
     previousButton.textContent = "previous";
     previousButton.onclick = clickOnBtn;
+    previousButton.style.borderRadius = "5px 0px 0px 5px";
+    previousButton.style.paddingLeft = "8px";
+    previousButton.style.paddingRight = "8px";
     setElementInPagination(previousButton);
-
+   
     for (let i = 0; i < pagesTotal; i++) {
         if (i == activePage - 3 && activePage >= 6 && pagesTotal >= 6) {
             let label = document.createElement("label");
@@ -240,8 +232,9 @@ function myPagination() {
             let button = document.createElement("button");
             button.textContent = `${i + 1}`;
             if (i == activePage - 1) {
-
+                    
                 button.style.color = colorActive;
+                button.style.borderColor = colorActive;
             }
             button.onclick = clickOnBtn;
             setElementInPagination(button);
@@ -287,22 +280,20 @@ function myPagination() {
             let nextButton = document.createElement("button");
             nextButton.textContent = "next";
             nextButton.onclick = clickOnBtn;
+            nextButton.style.borderRadius = "0px 5px 5px 0px";
+            nextButton.style.paddingLeft = "8px";
+            nextButton.style.paddingRight = "8px";
             setElementInPagination(nextButton);
         }
     }
 }
 
 function setElementInPagination(elem) {
-    let paginations = document.getElementsByClassName("pagination");
+    let paginations = document.getElementsByClassName("pagination row justify-content-center");
     for (let i = 0; i < paginations.length; i++) {
         if (i == 0) {
             paginations[i].appendChild(elem);
         }
-        // else {
-        //     let clone = elem.cloneNode(true);
-        //     clone.onclick = clickOnBtn;
-        //     paginations[i].appendChild(clone);
-        // }
     }
 }
 
